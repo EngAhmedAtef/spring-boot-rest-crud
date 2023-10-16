@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @ToString
 @Entity
 @Table(name = "instructor")
@@ -22,22 +22,30 @@ public class InstructorEntity {
     private int id;
 
     @Column(name = "first_name")
-    private @NonNull String firstName;
+    private String firstName;
 
     @Column(name = "last_name")
-    private @NonNull String lastName;
+    private String lastName;
 
     @Column(name = "email")
-    private @NonNull String email;
+    private String email;
 
     @Column(name = "phone_number")
-    private @NonNull String phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "title")
-    private @NonNull String title;
+    private String title;
 
     @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
     @JsonManagedReference
     private List<CourseEntity> courses;
 
+//    @Override
+//    public String toString() {
+//        return "InstructorEntity{" +
+//                "id=" + id +
+//                ", firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                '}';
+//    }
 }

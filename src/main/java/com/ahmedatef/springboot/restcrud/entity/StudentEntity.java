@@ -1,7 +1,9 @@
 package com.ahmedatef.springboot.restcrud.entity;
 
 import com.ahmedatef.springboot.restcrud.enums.Gender;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -42,6 +44,16 @@ public class StudentEntity {
             joinColumns = @JoinColumn(name = "student_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id")
     )
-    @JsonIgnore
+//    @JsonIgnore
+    @JsonBackReference
     private Set<CourseEntity> courses;
+
+//    @Override
+//    public String toString() {
+//        return "StudentEntity{" +
+//                "id=" + id +
+//                ", firstName='" + firstName + '\'' +
+//                ", lastName='" + lastName + '\'' +
+//                '}';
+//    }
 }

@@ -1,8 +1,7 @@
-package com.ahmedatef.springboot.restcrud.rest;
+package com.ahmedatef.springboot.restcrud.controller;
 
-import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
-import com.ahmedatef.springboot.restcrud.service.InstructorService;
+import com.ahmedatef.springboot.restcrud.service.InstructorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +11,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class InstructorRestController {
 
-    private final InstructorService instructorService;
+    private final InstructorServiceImpl instructorService;
 
     @Autowired
-    public InstructorRestController(InstructorService instructorService) {
+    public InstructorRestController(InstructorServiceImpl instructorService) {
         this.instructorService = instructorService;
     }
 

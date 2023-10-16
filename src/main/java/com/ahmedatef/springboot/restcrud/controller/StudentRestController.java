@@ -1,7 +1,7 @@
-package com.ahmedatef.springboot.restcrud.rest;
+package com.ahmedatef.springboot.restcrud.controller;
 
 import com.ahmedatef.springboot.restcrud.entity.StudentEntity;
-import com.ahmedatef.springboot.restcrud.service.StudentService;
+import com.ahmedatef.springboot.restcrud.service.StudentServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +12,10 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class StudentRestController {
 
-    private final StudentService service;
+    private final StudentServiceImpl service;
 
     @Autowired
-    public StudentRestController(StudentService service) {
+    public StudentRestController(StudentServiceImpl service) {
         this.service = service;
     }
 

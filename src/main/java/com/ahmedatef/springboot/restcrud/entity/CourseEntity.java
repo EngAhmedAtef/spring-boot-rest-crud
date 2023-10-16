@@ -2,7 +2,6 @@ package com.ahmedatef.springboot.restcrud.entity;
 
 import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @ToString
 @Entity
 @Table(name = "courses")
@@ -24,27 +23,36 @@ public class CourseEntity {
     private UUID id;
 
     @Column(name = "name")
-    private @NonNull String name;
+    private String name;
 
     @Column(name = "start_date")
-    private @NonNull Timestamp startDate;
+    private Timestamp startDate;
 
     @Column(name = "end_date")
-    private @NonNull Timestamp endDate;
+    private Timestamp endDate;
 
     @Column(name = "course_level")
     @Enumerated(EnumType.STRING)
-    private @NonNull CourseLevel courseLevel;
+    private CourseLevel courseLevel;
 
     @Column(name = "is_started")
-    private @NonNull Boolean isStarted;
+    private Boolean isStarted;
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "instructor_id")
     @JsonBackReference
-    private @NonNull InstructorEntity instructor;
+    private InstructorEntity instructor;
 
     @ManyToMany(mappedBy = "courses")
+    @JsonBackReference
     private Set<StudentEntity> students;
 
+
+//    @Override
+//    public String toString() {
+//        return "CourseEntity{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                '}';
+//    }
 }

@@ -1,4 +1,4 @@
-package com.ahmedatef.springboot.restcrud.dao;
+package com.ahmedatef.springboot.restcrud.repository;
 
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 import org.springframework.data.jpa.repository.JpaRepository;

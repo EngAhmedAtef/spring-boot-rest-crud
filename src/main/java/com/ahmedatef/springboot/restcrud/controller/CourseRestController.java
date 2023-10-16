@@ -1,10 +1,9 @@
-package com.ahmedatef.springboot.restcrud.rest;
+package com.ahmedatef.springboot.restcrud.controller;
 
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
-import com.ahmedatef.springboot.restcrud.exception.CourseNotFoundException;
-import com.ahmedatef.springboot.restcrud.service.CourseService;
-import com.ahmedatef.springboot.restcrud.service.InstructorService;
+import com.ahmedatef.springboot.restcrud.service.CourseServiceImpl;
+import com.ahmedatef.springboot.restcrud.service.InstructorServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,11 +14,11 @@ import java.util.UUID;
 @RequestMapping("/api")
 public class CourseRestController {
 
-    private final CourseService service;
-    private final InstructorService instructorService;
+    private final CourseServiceImpl service;
+    private final InstructorServiceImpl instructorService;
 
     @Autowired
-    public CourseRestController(CourseService service, InstructorService instructorService) {
+    public CourseRestController(CourseServiceImpl service, InstructorServiceImpl instructorService) {
         this.service = service;
         this.instructorService = instructorService;
     }
