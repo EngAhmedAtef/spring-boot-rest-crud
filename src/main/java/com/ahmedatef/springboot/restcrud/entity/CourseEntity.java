@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Timestamp;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -42,5 +43,8 @@ public class CourseEntity {
     @JoinColumn(name = "instructor_id")
     @JsonBackReference
     private @NonNull InstructorEntity instructor;
+
+    @ManyToMany(mappedBy = "courses")
+    private Set<StudentEntity> students;
 
 }

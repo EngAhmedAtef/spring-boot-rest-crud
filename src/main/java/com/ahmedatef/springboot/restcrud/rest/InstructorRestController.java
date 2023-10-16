@@ -42,24 +42,15 @@ public class InstructorRestController {
     // Expose the instructors endpoint to update an instructor
     @PutMapping("/instructors")
     public InstructorEntity updateInstructor(@RequestBody InstructorEntity instructor) {
-        InstructorEntity dbInstructor = instructorService.findById(instructor.getId());
-
-        if (dbInstructor == null)
-            throw new InstructorNotFoundException("Instructor id not found - " + instructor.getId());
-
+        instructorService.findById(instructor.getId());
         return instructorService.save(instructor);
     }
 
     // Expose the instructors endpoint to delete an instructor by id
     @DeleteMapping("/instructors/{instructorId}")
     public String deleteInstructor(@PathVariable int instructorId) {
-        InstructorEntity instructor = instructorService.findById(instructorId);
-
-        if (instructor == null)
-            throw new InstructorNotFoundException("Instructor id not found - " + instructorId);
-
+        instructorService.findById(instructorId);
         instructorService.deleteById(instructorId);
-
         return "Deleted employee id - " + instructorId;
     }
 

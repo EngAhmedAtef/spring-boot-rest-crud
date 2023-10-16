@@ -38,8 +38,7 @@ public class CourseRestController {
     public CourseEntity addCourse(@RequestBody CourseEntity course) {
         InstructorEntity instructor = course.getInstructor();
         InstructorEntity dbInstructor = instructorService.findById(instructor.getId());
-        if (dbInstructor != null)
-            course.setInstructor(dbInstructor);
+        course.setInstructor(dbInstructor);
 
         return service.save(course);
     }
@@ -47,10 +46,6 @@ public class CourseRestController {
     @PutMapping("/courses")
     public CourseEntity updateCourse(@RequestBody CourseEntity course) {
         CourseEntity dbCourse = service.findById(course.getId());
-
-        if (dbCourse == null)
-            throw new CourseNotFoundException("Course id not found - " + course.getId());
-
         course.setInstructor(dbCourse.getInstructor());
         return service.save(course);
     }
@@ -58,12 +53,7 @@ public class CourseRestController {
     @DeleteMapping("/courses/{courseId}")
     public String deleteCourse(@PathVariable UUID courseId) {
         CourseEntity course = service.findById(courseId);
-
-        if (course == null)
-            throw new CourseNotFoundException("Course id not found - " + courseId);
-
         service.deleteById(courseId);
-
         return "Delete course id - " + courseId;
     }
 }
