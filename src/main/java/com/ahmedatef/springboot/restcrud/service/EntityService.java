@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface EntityService<T> {
     List<T> findAll();
-    T findById(int id);
+    <D> T findById(D id);
     T save(T entity);
-    void deleteById(int id);
+    <D> void deleteById(D id);
 }

@@ -2,7 +2,7 @@ package com.ahmedatef.springboot.restcrud.rest;
 
 import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
-import com.ahmedatef.springboot.restcrud.service.InstructorServiceImpl;
+import com.ahmedatef.springboot.restcrud.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +12,10 @@ import java.util.List;
 @RequestMapping("/api")
 public class InstructorRestController {
 
-    private final InstructorServiceImpl instructorService;
+    private final InstructorService instructorService;
 
     @Autowired
-    public InstructorRestController(InstructorServiceImpl instructorService) {
+    public InstructorRestController(InstructorService instructorService) {
         this.instructorService = instructorService;
     }
 
@@ -34,8 +34,7 @@ public class InstructorRestController {
     // Expose the instructors endpoint and add a new instructor
     @PostMapping("/instructors")
     public InstructorEntity addInstructor(@RequestBody InstructorEntity instructor) {
-        // Set the id to 0, so we ensure that the merge() will add a new instructor instead of updating
-        // in case the client sends an id
+        // Set the id to 0, so the merge() adds a new instructor
         instructor.setId(0);
         return instructorService.save(instructor);
     }

@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class InstructorServiceImpl implements EntityService<InstructorEntity> {
+public class InstructorService implements EntityService<InstructorEntity> {
 
     private final InstructorRepository repository;
 
     @Autowired
-    public InstructorServiceImpl(InstructorRepository repository) {
+    public InstructorService(InstructorRepository repository) {
         this.repository = repository;
     }
 
@@ -24,9 +24,14 @@ public class InstructorServiceImpl implements EntityService<InstructorEntity> {
         return repository.findAll();
     }
 
+//    @Override
+//    public <D> InstructorEntity findById(D id) {
+//        return null;
+//    }
+
     @Override
-    public InstructorEntity findById(int id) {
-        Optional<InstructorEntity> optional = repository.findById(id);
+    public <D> InstructorEntity findById(D id) {
+        Optional<InstructorEntity> optional = repository.findById((Integer) id);
         if (optional.isPresent())
             return optional.get();
         else
@@ -39,7 +44,7 @@ public class InstructorServiceImpl implements EntityService<InstructorEntity> {
     }
 
     @Override
-    public void deleteById(int id) {
-        repository.deleteById(id);
+    public <D> void deleteById(D id) {
+        repository.deleteById((Integer) id);
     }
 }

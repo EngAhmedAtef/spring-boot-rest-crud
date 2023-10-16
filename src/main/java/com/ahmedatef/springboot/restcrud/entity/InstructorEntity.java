@@ -1,7 +1,11 @@
 package com.ahmedatef.springboot.restcrud.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,5 +35,9 @@ public class InstructorEntity {
 
     @Column(name = "title")
     private @NonNull String title;
+
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private List<CourseEntity> courses;
 
 }
