@@ -1,7 +1,7 @@
 package com.ahmedatef.springboot.restcrud.entity;
 
 import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,21 +38,10 @@ public class CourseEntity {
     @Column(name = "is_started")
     private Boolean isStarted;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "instructor_id")
-    @JsonBackReference
     private InstructorEntity instructor;
 
     @ManyToMany(mappedBy = "courses")
-    @JsonBackReference
     private Set<StudentEntity> students;
-
-
-//    @Override
-//    public String toString() {
-//        return "CourseEntity{" +
-//                "id=" + id +
-//                ", name='" + name + '\'' +
-//                '}';
-//    }
 }

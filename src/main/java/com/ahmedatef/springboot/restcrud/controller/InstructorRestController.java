@@ -1,56 +1,63 @@
 package com.ahmedatef.springboot.restcrud.controller;
 
-import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
-import com.ahmedatef.springboot.restcrud.service.InstructorServiceImpl;
+import com.ahmedatef.springboot.restcrud.dto.InstructorAndEnrolledStudentsDTO;
+import com.ahmedatef.springboot.restcrud.dto.InstructorDTO;
+import com.ahmedatef.springboot.restcrud.dto.InstructorNameAndCourseNamesDTO;
+import com.ahmedatef.springboot.restcrud.dto.InstructorResponse;
+import com.ahmedatef.springboot.restcrud.service.InstructorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/instructors")
 public class InstructorRestController {
 
-    private final InstructorServiceImpl instructorService;
+    private final InstructorService instructorService;
 
     @Autowired
-    public InstructorRestController(InstructorServiceImpl instructorService) {
+    public InstructorRestController(InstructorService instructorService) {
         this.instructorService = instructorService;
     }
 
-    // Expose the instructors endpoint and return a list of instructors
-    @GetMapping("/instructors")
-    public List<InstructorEntity> getInstructors() {
+    @GetMapping
+    public List<InstructorResponse> getInstructors() {
         return instructorService.findAll();
     }
 
-    // Expose the instructors endpoint and return a single instructor
-    @GetMapping("/instructors/{instructorId}")
-    public InstructorEntity getInstructorById(@PathVariable int instructorId) {
+    @GetMapping("/{instructorId}")
+    public InstructorResponse getInstructorById(@PathVariable int instructorId) {
         return instructorService.findById(instructorId);
     }
 
-    // Expose the instructors endpoint and add a new instructor
-    @PostMapping("/instructors")
-    public InstructorEntity addInstructor(@RequestBody InstructorEntity instructor) {
+    @PostMapping
+    public InstructorResponse addInstructor(@RequestBody InstructorDTO instructor) {
         // Set the id to 0, so the merge() adds a new instructor
         instructor.setId(0);
         return instructorService.save(instructor);
     }
 
-    // Expose the instructors endpoint to update an instructor
-    @PutMapping("/instructors")
-    public InstructorEntity updateInstructor(@RequestBody InstructorEntity instructor) {
+    @PutMapping
+    public InstructorResponse updateInstructor(@RequestBody InstructorDTO instructor) {
         instructorService.findById(instructor.getId());
         return instructorService.save(instructor);
     }
 
-    // Expose the instructors endpoint to delete an instructor by id
-    @DeleteMapping("/instructors/{instructorId}")
+    @DeleteMapping("/{instructorId}")
     public String deleteInstructor(@PathVariable int instructorId) {
-        instructorService.findById(instructorId);
         instructorService.deleteById(instructorId);
-        return "Deleted employee id - " + instructorId;
+        return "Deleted instructor id - " + instructorId;
+    }
+
+    @GetMapping("/courses")
+    public List<InstructorNameAndCourseNamesDTO> getInstructorAndCourses() {
+        return instructorService.getInstructorAndCourses();
+    }
+
+    @GetMapping("/students")
+    public List<InstructorAndEnrolledStudentsDTO> getInstructorAndEnrolledStudents() {
+        return instructorService.getInstructorAndEnrolledStudents();
     }
 
 }

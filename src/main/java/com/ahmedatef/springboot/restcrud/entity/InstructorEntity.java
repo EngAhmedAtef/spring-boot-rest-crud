@@ -1,7 +1,6 @@
 package com.ahmedatef.springboot.restcrud.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,16 +35,10 @@ public class InstructorEntity {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
-    @JsonManagedReference
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
     private List<CourseEntity> courses;
 
-//    @Override
-//    public String toString() {
-//        return "InstructorEntity{" +
-//                "id=" + id +
-//                ", firstName='" + firstName + '\'' +
-//                ", lastName='" + lastName + '\'' +
-//                '}';
-//    }
+    @OneToOne(mappedBy = "instructor", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JsonBackReference
+    private InstructorDetailsEntity details;
 }
