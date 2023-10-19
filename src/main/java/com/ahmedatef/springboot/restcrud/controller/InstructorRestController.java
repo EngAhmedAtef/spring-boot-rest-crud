@@ -33,15 +33,12 @@ public class InstructorRestController {
 
     @PostMapping
     public InstructorResponse addInstructor(@RequestBody InstructorDTO instructor) {
-        // Set the id to 0, so the merge() adds a new instructor
-        instructor.setId(0);
         return instructorService.save(instructor);
     }
 
     @PutMapping
     public InstructorResponse updateInstructor(@RequestBody InstructorDTO instructor) {
-        instructorService.findById(instructor.getId());
-        return instructorService.save(instructor);
+        return instructorService.update(instructor);
     }
 
     @DeleteMapping("/{instructorId}")

@@ -26,7 +26,7 @@ public class InstructorDetailsEntity {
     @Column(name = "hobbies", columnDefinition = "text[]")
     private String[] hobbies;
 
-    @OneToOne(cascade = {CascadeType.PERSIST})
+    @OneToOne
     @JoinColumn(name = "instructor_id")
     private InstructorEntity instructor;
 }

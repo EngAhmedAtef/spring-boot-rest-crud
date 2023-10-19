@@ -39,6 +39,5 @@ public class InstructorEntity {
     private List<CourseEntity> courses;
 
     @OneToOne(mappedBy = "instructor", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JsonBackReference
     private InstructorDetailsEntity details;
 }

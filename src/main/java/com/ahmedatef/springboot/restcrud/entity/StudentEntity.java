@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-@RequiredArgsConstructor
+@AllArgsConstructor
 @ToString
 @Entity
 @Table(name = "students")
@@ -23,26 +23,26 @@ public class StudentEntity {
     private UUID id;
 
     @Column(name = "first_name")
-    private @NonNull String firstName;
+    private String firstName;
 
     @Column(name = "last_name")
-    private @NonNull String lastName;
+    private String lastName;
 
     @Column(name = "age")
-    private @NonNull int age;
+    private int age;
 
     @Column(name = "gender")
     @Enumerated(EnumType.STRING)
-    private @NonNull Gender gender;
+    private Gender gender;
 
     @Column(name = "email")
-    private @NonNull String email;
+    private String email;
 
     @Column(name = "phone_number")
-    private @NonNull String phoneNumber;
+    private String phoneNumber;
 
     @Column(name = "national_id")
-    private @NonNull String nationalId;
+    private String nationalId;
 
     @ManyToMany
     @JoinTable(

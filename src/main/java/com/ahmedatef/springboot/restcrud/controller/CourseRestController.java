@@ -1,54 +1,55 @@
-//package com.ahmedatef.springboot.restcrud.controller;
-//
-//import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
-//import com.ahmedatef.springboot.restcrud.service.CourseServiceImpl;
-//import com.ahmedatef.springboot.restcrud.service.InstructorServiceImpl;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.*;
-//
-//import java.util.UUID;
-//
-//@RestController
-//@RequestMapping("/api")
-//public class CourseRestController {
-//
-//    private final CourseServiceImpl service;
-//    private final InstructorServiceImpl instructorService;
-//
-//    @Autowired
-//    public CourseRestController(CourseServiceImpl service, InstructorServiceImpl instructorService) {
-//        this.service = service;
-//        this.instructorService = instructorService;
-//    }
-//
-////    @GetMapping("/courses")
-////    public List<CourseDTO> getCourses() {
-////        return service.findAll();
-////    }
-//
-//    @GetMapping("/courses/{courseId}")
-//    public CourseDTO getCourseById(@PathVariable UUID courseId) {
-//        return service.findById(courseId);
-//    }
-//
-////    @PostMapping("/courses")
-////    public CourseDTO addCourse(@RequestBody CourseAddingRequest courseAddingRequest) {
-////        CourseRequestDTO courseRequestDTO = courseAddingRequest.getCourseRequestDTO();
-////        courseRequestDTO.setInstructorId(courseAddingRequest.getInstructorId());
-////        return service.save(courseRequestDTO);
-////    }
-//
-//    @PutMapping("/courses")
-//    public CourseDTO updateCourse(@RequestBody CourseDTO course) {
-//        CourseDTO dbCourse = service.findById(course.getId());
-//        course.setInstructor(dbCourse.getInstructor());
-//        return service.save(course);
-//    }
-//
-//    @DeleteMapping("/courses/{courseId}")
-//    public String deleteCourse(@PathVariable UUID courseId) {
-//        service.findById(courseId);
-//        service.deleteById(courseId);
-//        return "Delete course id - " + courseId;
-//    }
-//}
+package com.ahmedatef.springboot.restcrud.controller;
+
+import com.ahmedatef.springboot.restcrud.dto.CourseAddAndLinkInstructorRequest;
+import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
+import com.ahmedatef.springboot.restcrud.dto.CourseNameStartDateEnrolledStudentsDTO;
+import com.ahmedatef.springboot.restcrud.dto.CourseResponse;
+import com.ahmedatef.springboot.restcrud.service.CourseService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("/api/courses")
+public class CourseRestController {
+
+    private final CourseService service;
+
+    @Autowired
+    public CourseRestController(CourseService service) {
+        this.service = service;
+    }
+
+    @GetMapping
+    public List<CourseResponse> getCourses() {
+        return service.findAll();
+    }
+
+    @GetMapping("/{courseId}")
+    public CourseResponse getCourseById(@PathVariable UUID courseId) {
+        return service.findById(courseId);
+    }
+
+    @PostMapping
+    public CourseResponse addCourse(@RequestBody CourseAddAndLinkInstructorRequest addRequest) {
+        return service.saveCourseAndLinkInstructor(addRequest);
+    }
+
+    @PutMapping
+    public CourseResponse updateCourse(@RequestBody CourseDTO course) {
+        return service.update(course);
+    }
+
+    @DeleteMapping("/{courseId}")
+    public String deleteCourse(@PathVariable UUID courseId) {
+        service.deleteById(courseId);
+        return "Deleted course id - " + courseId;
+    }
+
+    @GetMapping("/students")
+    public List<CourseNameStartDateEnrolledStudentsDTO> getNameStartDateEnrolledStudents() {
+        return service.getNameStartDateEnrolledStudents();
+    }
+}

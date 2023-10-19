@@ -42,8 +42,25 @@ public class InstructorService {
 
     public InstructorResponse save(InstructorDTO instructor) {
         InstructorEntity entity = MapperUtil.map(instructor, InstructorEntity.class);
+        entity.setId(0);
         InstructorEntity savedEntity = repository.save(entity);
         return InstructorMapper.mapToResponse(savedEntity);
+    }
+
+    public InstructorResponse update(InstructorDTO instructor) {
+        Optional<InstructorEntity> optional = repository.findById(instructor.getId());
+        if (optional.isPresent()) {
+            InstructorEntity instructorEntity = optional.get();
+            instructorEntity.setId(instructor.getId());
+            instructorEntity.setFirstName(instructor.getFirstName());
+            instructorEntity.setLastName(instructor.getLastName());
+            instructorEntity.setEmail(instructor.getEmail());
+            instructorEntity.setTitle(instructor.getTitle());
+            instructorEntity.setPhoneNumber(instructor.getPhoneNumber());
+            InstructorEntity savedEntity = repository.save(instructorEntity);
+            return InstructorMapper.mapToResponse(savedEntity);
+        } else
+            throw new InstructorNotFoundException("Instructor id not found - " + instructor.getId());
     }
 
     public void deleteById(int id) {
