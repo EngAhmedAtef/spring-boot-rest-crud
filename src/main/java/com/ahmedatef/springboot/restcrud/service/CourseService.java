@@ -12,6 +12,8 @@ import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
 import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
 import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
+import jakarta.persistence.EntityManager;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,11 +28,13 @@ public class CourseService {
 
     private final CourseRepository repository;
     private final InstructorRepository instructorRepository;
+    private final EntityManager entityManager;
 
     @Autowired
-    public CourseService(CourseRepository repository, InstructorRepository instructorRepository) {
+    public CourseService(CourseRepository repository, InstructorRepository instructorRepository, EntityManager entityManager) {
         this.repository = repository;
         this.instructorRepository = instructorRepository;
+        this.entityManager = entityManager;
     }
 
     public List<CourseResponse> findAll() {
@@ -48,7 +52,6 @@ public class CourseService {
             throw new CourseNotFoundException("Course id not found - " + id);
     }
 
-    @Transactional
     public void deleteById(UUID id) {
         Optional<CourseEntity> optional = repository.findById(id);
         if (optional.isPresent()) {
@@ -66,7 +69,6 @@ public class CourseService {
         if (optional.isPresent()) {
             CourseEntity courseEntity = MapperUtil.map(courseDTO, CourseEntity.class);
             courseEntity.setInstructor(optional.get());
-            courseEntity.setId(UUID.fromString("0"));
             CourseEntity savedEntity = repository.save(courseEntity);
             return CourseMapper.mapToResponse(savedEntity);
         } else

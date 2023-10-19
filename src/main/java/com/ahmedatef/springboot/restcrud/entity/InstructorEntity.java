@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "instructor")
 public class InstructorEntity {
@@ -35,9 +34,9 @@ public class InstructorEntity {
     @Column(name = "title")
     private String title;
 
-    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+    @OneToMany(mappedBy = "instructor", fetch = FetchType.EAGER)
     private List<CourseEntity> courses;
 
-    @OneToOne(mappedBy = "instructor", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(mappedBy = "instructor")
     private InstructorDetailsEntity details;
 }

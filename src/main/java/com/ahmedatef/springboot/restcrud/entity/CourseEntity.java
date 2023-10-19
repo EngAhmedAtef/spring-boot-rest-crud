@@ -13,7 +13,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Entity
 @Table(name = "courses")
 public class CourseEntity {
@@ -38,7 +37,7 @@ public class CourseEntity {
     @Column(name = "is_started")
     private Boolean isStarted;
 
-    @ManyToOne(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "instructor_id")
     private InstructorEntity instructor;
 
