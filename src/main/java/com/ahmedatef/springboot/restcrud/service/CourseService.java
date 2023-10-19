@@ -101,12 +101,6 @@ public class CourseService {
             throw new UnknownGenderException("level values can be one of the following: " + Arrays.stream(CourseLevel.values()).map(String::valueOf).toList());
         }
 
-//        boolean valid = Arrays.stream(CourseLevel.values()).anyMatch(courseLevel -> courseLevel == level);
-//        if (!valid) {
-//            System.out.println("Threw UnknownGenderException");
-//            throw new UnknownGenderException("level values can be one of the following: " + Arrays.stream(CourseLevel.values()).map(String::valueOf).toList());
-//        }
-
         List<CourseEntity> courseEntities = repository.findAll();
         return courseEntities.stream()
                 .filter(courseEntity -> courseEntity.getCourseLevel() == inputLevel)
