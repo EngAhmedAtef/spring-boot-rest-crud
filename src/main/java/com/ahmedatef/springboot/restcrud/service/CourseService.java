@@ -1,23 +1,21 @@
 package com.ahmedatef.springboot.restcrud.service;
 
-import com.ahmedatef.springboot.restcrud.dto.CourseAddAndLinkInstructorRequest;
-import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseNameStartDateEnrolledStudentsDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseResponse;
+import com.ahmedatef.springboot.restcrud.dto.*;
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
+import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
 import com.ahmedatef.springboot.restcrud.exception.CourseNotFoundException;
 import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
+import com.ahmedatef.springboot.restcrud.exception.UnknownGenderException;
 import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
 import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
 import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
 import jakarta.persistence.EntityManager;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -93,5 +91,32 @@ public class CourseService {
     public List<CourseNameStartDateEnrolledStudentsDTO> getNameStartDateEnrolledStudents() {
         List<CourseEntity> courseEntities = repository.findAll();
         return courseEntities.stream().map(CourseMapper::mapToNameStartDateEnrolledStudents).toList();
+    }
+
+    public List<CourseLevelEnrolledStudents> getCourseLevelEnrolledStudents(String level) {
+        CourseLevel inputLevel;
+        try {
+            inputLevel = CourseLevel.valueOf(level);
+        } catch (IllegalArgumentException e) {
+            throw new UnknownGenderException("level values can be one of the following: " + Arrays.stream(CourseLevel.values()).map(String::valueOf).toList());
+        }
+
+//        boolean valid = Arrays.stream(CourseLevel.values()).anyMatch(courseLevel -> courseLevel == level);
+//        if (!valid) {
+//            System.out.println("Threw UnknownGenderException");
+//            throw new UnknownGenderException("level values can be one of the following: " + Arrays.stream(CourseLevel.values()).map(String::valueOf).toList());
+//        }
+
+        List<CourseEntity> courseEntities = repository.findAll();
+        return courseEntities.stream()
+                .filter(courseEntity -> courseEntity.getCourseLevel() == inputLevel)
+                .map(courseEntity -> {
+                    List<String> studentNames = courseEntity.getStudents().stream().map(student -> student.getFirstName() + " " + student.getLastName()).toList();
+                    return new CourseLevelEnrolledStudents(
+                            courseEntity.getName(),
+                            courseEntity.getCourseLevel(),
+                            studentNames
+                    );
+                }).toList();
     }
 }

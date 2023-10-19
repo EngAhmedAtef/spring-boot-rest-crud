@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediumCourseEnrolledStudents {
+public class CourseLevelEnrolledStudents {
     private String courseName;
     private CourseLevel courseLevel;
     private List<String> studentNames;

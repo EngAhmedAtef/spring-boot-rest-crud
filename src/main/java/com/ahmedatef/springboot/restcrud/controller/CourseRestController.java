@@ -1,9 +1,7 @@
 package com.ahmedatef.springboot.restcrud.controller;
 
-import com.ahmedatef.springboot.restcrud.dto.CourseAddAndLinkInstructorRequest;
-import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseNameStartDateEnrolledStudentsDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseResponse;
+import com.ahmedatef.springboot.restcrud.dto.*;
+import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
 import com.ahmedatef.springboot.restcrud.service.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +49,10 @@ public class CourseRestController {
     @GetMapping("/students")
     public List<CourseNameStartDateEnrolledStudentsDTO> getNameStartDateEnrolledStudents() {
         return service.getNameStartDateEnrolledStudents();
+    }
+
+    @GetMapping("/level")
+    public List<CourseLevelEnrolledStudents> getCourseLevelEnrolledStudents(@RequestParam("level") String level) {
+        return service.getCourseLevelEnrolledStudents(level);
     }
 }
