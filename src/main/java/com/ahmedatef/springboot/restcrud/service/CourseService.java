@@ -11,7 +11,6 @@ import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
 import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
 import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,13 +25,11 @@ public class CourseService {
 
     private final CourseRepository repository;
     private final InstructorRepository instructorRepository;
-    private final EntityManager entityManager;
 
     @Autowired
-    public CourseService(CourseRepository repository, InstructorRepository instructorRepository, EntityManager entityManager) {
+    public CourseService(CourseRepository repository, InstructorRepository instructorRepository) {
         this.repository = repository;
         this.instructorRepository = instructorRepository;
-        this.entityManager = entityManager;
     }
 
     public List<CourseResponse> findAll() {
