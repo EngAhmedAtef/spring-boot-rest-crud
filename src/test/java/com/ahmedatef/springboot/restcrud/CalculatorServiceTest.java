@@ -3,18 +3,10 @@ package com.ahmedatef.springboot.restcrud;
 import com.ahmedatef.springboot.restcrud.service.CalculatorService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
 public class CalculatorServiceTest {
 
-    private final CalculatorService service;
-
-    @Autowired
-    public CalculatorServiceTest(CalculatorService service) {
-        this.service = service;
-    }
+    private final CalculatorService service = new CalculatorService();
 
     @Test
     public void CalculatorService_Add_ReturnsCorrectAnswer() {
