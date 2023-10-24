@@ -5,14 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.UUID;
-
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstructorDetailsDTO {
-    private UUID id;
-    private String youtubeChannel;
-    private String[] hobbies;
+@Getter
+@Setter
+public class DetailsAddLinkRequest {
+    private InstructorDetailsDTO details;
+    private int instructorId;
 }

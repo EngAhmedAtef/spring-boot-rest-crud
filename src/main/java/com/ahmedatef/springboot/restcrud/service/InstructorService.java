@@ -32,8 +32,8 @@ public class InstructorService {
                 .collect(Collectors.toList());
     }
 
-    public <D> InstructorResponse findById(D id) {
-        Optional<InstructorEntity> optional = repository.findById((Integer) id);
+    public InstructorResponse findById(int id) {
+        Optional<InstructorEntity> optional = repository.findById(id);
         if (optional.isPresent())
             return InstructorMapper.mapToResponse(optional.get());
         else

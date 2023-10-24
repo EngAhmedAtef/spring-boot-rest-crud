@@ -49,10 +49,8 @@ public class CourseService {
 
     public void deleteById(UUID id) {
         Optional<CourseEntity> optional = repository.findById(id);
-        if (optional.isPresent()) {
-            CourseEntity courseEntity = optional.get();
-            repository.delete(courseEntity);
-        }
+        if (optional.isPresent())
+            repository.delete(optional.get());
         else
             throw new CourseNotFoundException("Course id not found - " + id);
     }
