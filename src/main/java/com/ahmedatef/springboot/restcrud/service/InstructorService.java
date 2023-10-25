@@ -73,11 +73,15 @@ public class InstructorService {
             throw new InstructorNotFoundException("Instructor id not found - " + id);
     }
 
+//    public List<InstructorNameAndCourseNamesDTO> getInstructorAndCourses() {
+//        List<InstructorEntity> instructorEntities = repository.findAll();
+//        return instructorEntities.stream()
+//                .map(InstructorMapper::mapToNameAndCourseNames)
+//                .toList();
+//    }
+
     public List<InstructorNameAndCourseNamesDTO> getInstructorAndCourses() {
-        List<InstructorEntity> instructorEntities = repository.findAll();
-        return instructorEntities.stream()
-                .map(InstructorMapper::mapToNameAndCourseNames)
-                .toList();
+        return repository.getInstructorCoursesNames();
     }
 
     public List<InstructorAndEnrolledStudentsDTO> getInstructorAndEnrolledStudents() {
