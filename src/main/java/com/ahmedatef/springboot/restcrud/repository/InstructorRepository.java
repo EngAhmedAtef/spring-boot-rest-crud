@@ -1,5 +1,6 @@
 package com.ahmedatef.springboot.restcrud.repository;
 
+import com.ahmedatef.springboot.restcrud.dto.InstructorAndEnrolledStudentsDTO;
 import com.ahmedatef.springboot.restcrud.dto.InstructorNameAndCourseNamesDTO;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,5 +16,10 @@ public interface InstructorRepository extends JpaRepository<InstructorEntity, In
             FROM InstructorEntity i JOIN i.courses c GROUP BY (i.firstName || ' ' || i.lastName)
             """)
     List<InstructorNameAndCourseNamesDTO> getInstructorCoursesNames();
+
+//    @Query("""
+//
+//            """)
+//    List<InstructorAndEnrolledStudentsDTO> getInstructorAndEnrolledStudents();
 
 }

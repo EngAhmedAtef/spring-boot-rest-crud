@@ -1,10 +1,10 @@
-package com.ahmedatef.springboot.restcrud;
+package com.ahmedatef.springboot.restcrud.service;
 
 import com.ahmedatef.springboot.restcrud.service.CalculatorService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CalculatorServiceTest {
@@ -16,10 +16,7 @@ public class CalculatorServiceTest {
 
     @Test
     public void CalculatorService_Add_ReturnsCorrectAnswer() {
-        int answer = 4;
-        int expected = service.add(2, 2);
-
-        assertThat(answer == expected).isTrue();
+        assertEquals(4, service.add(2, 2));
     }
 
     @Test
@@ -29,10 +26,7 @@ public class CalculatorServiceTest {
 
     @Test
     public void CalculatorService_Subtract_ReturnsCorrectAnswer() {
-        int answer = 2;
-        int expected = service.subtract(5, 3);
-
-        assertThat(answer == expected).isTrue();
+        assertEquals(2, service.subtract(5, 3));
     }
 
     @Test
@@ -42,10 +36,7 @@ public class CalculatorServiceTest {
 
     @Test
     public void CalculatorService_Multiply_ReturnsCorrectAnswer() {
-        int answer = 15;
-        int expected = service.multiply(5, 3);
-
-        assertThat(answer == expected).isTrue();
+        assertEquals(15, service.multiply(5, 3));
     }
 
     @Test
@@ -55,10 +46,7 @@ public class CalculatorServiceTest {
 
     @Test
     public void CalculatorService_Divide_ReturnsCorrectAnswer() {
-        int answer = 5;
-        int expected = service.divide(10, 2);
-
-        assertThat(answer == expected).isTrue();
+        assertEquals(5, service.divide(10, 2));
     }
 
     @Test
