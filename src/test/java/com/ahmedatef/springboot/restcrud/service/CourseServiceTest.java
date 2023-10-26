@@ -38,7 +38,7 @@ class CourseServiceTest {
 
         List<CourseEntity> courses = Arrays.asList(courseEntity, courseEntity, courseEntity, courseEntity);
 
-        when(courseRepository.findAll()).thenReturn(courses);
+        doReturn(courses).when(courseRepository).findAll();
         when(CourseMapper.mapToResponse(courseEntity)).thenReturn(courseResponse);
 
         assertEquals(4, courseService.findAll().size());
