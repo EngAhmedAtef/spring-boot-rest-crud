@@ -6,6 +6,10 @@ import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
 import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,14 +17,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class CourseServiceTest {
+
+    @Mock
+    private CourseRepository courseRepository;
+    @Mock
+    private InstructorRepository instructorRepository;
+    @Mock
+    private CourseResponse courseResponse;
+    @Mock
+    private CourseEntity courseEntity;
+    @InjectMocks
+    CourseService courseService;
 
     @Test
     void CourseService_FindAll_ReturnsAllValues() {
-        CourseRepository courseRepository = mock(CourseRepository.class);
-        InstructorRepository instructorRepository = mock(InstructorRepository.class);
-        CourseResponse courseResponse = mock(CourseResponse.class);
-        CourseEntity courseEntity = mock(CourseEntity.class);
 
         mockStatic(CourseMapper.class);
 
@@ -29,9 +41,8 @@ class CourseServiceTest {
         when(courseRepository.findAll()).thenReturn(courses);
         when(CourseMapper.mapToResponse(courseEntity)).thenReturn(courseResponse);
 
-        CourseService courseService = new CourseService(courseRepository, instructorRepository);
-
         assertEquals(4, courseService.findAll().size());
+
     }
 
 }
