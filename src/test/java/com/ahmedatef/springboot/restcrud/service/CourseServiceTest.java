@@ -3,6 +3,7 @@ package com.ahmedatef.springboot.restcrud.service;
 import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
 import com.ahmedatef.springboot.restcrud.dto.CourseResponse;
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
+import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
 import com.ahmedatef.springboot.restcrud.exception.CourseNotFoundException;
 import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
 import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
@@ -15,8 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -26,6 +26,8 @@ class CourseServiceTest {
     private CourseRepository courseRepository;
     @Mock
     private InstructorRepository instructorRepository;
+    @Mock
+    private InstructorEntity instructorEntity;
     @Mock
     private CourseDTO courseDTO;
     @Mock
@@ -104,6 +106,59 @@ class CourseServiceTest {
 
     @Test
     void CourseService_DeleteById_DeletesEntity() {
+
+        // Arrange
+        // Create a new course entity and set its id to a specific value
+        // Create a list to act as a database
+        // Add the entity to the database
+        UUID id = UUID.randomUUID();
+        CourseEntity entity = new CourseEntity();
+        entity.setId(id);
+
+        List<CourseEntity> courses = new ArrayList<>() {{
+            add(entity);
+        }};
+
+        // Stub the necessary methods
+        doReturn(Optional.of(entity)).when(courseRepository).findById(id);
+        doAnswer(answer -> {
+            courses.remove(answer.getArgument(0, CourseEntity.class));
+            return null;
+        }).when(courseRepository).delete(any(CourseEntity.class));
+
+        // Act
+        // Assert
+        assertAll(() -> {
+            assertEquals(1, courses.size());
+            courseService.deleteById(id);
+            assertEquals(0, courses.size());
+        });
+
+    }
+
+    @Test
+    void CourseService_DeleteById_ThrowsCourseNotFoundException() {
+
+        // Arrange
+        // Stub the necessary methods
+        doReturn(Optional.empty()).when(courseRepository).findById(any());
+
+        // Act
+        // Assert
+        assertThrows(CourseNotFoundException.class, () -> courseService.deleteById(UUID.randomUUID()));
+
+    }
+
+    @Test
+    void CourseService_SaveCourseAndLinkInstructor_SavesObjectsCorrectly() {
+
+        // Arrange
+        // Sub the necessary methods
+
+
+        // Act
+
+        // Assert
 
     }
 
