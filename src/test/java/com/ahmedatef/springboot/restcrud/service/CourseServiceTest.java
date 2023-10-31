@@ -1,19 +1,26 @@
 package com.ahmedatef.springboot.restcrud.service;
 
-import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseResponse;
+import com.ahmedatef.springboot.restcrud.dto.*;
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
+import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
 import com.ahmedatef.springboot.restcrud.exception.CourseNotFoundException;
+import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
+import com.ahmedatef.springboot.restcrud.exception.UnknownGenderException;
 import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
+import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
 import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockedStatic;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.sql.Timestamp;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,11 +44,23 @@ class CourseServiceTest {
     @InjectMocks
     CourseService courseService;
 
+    private static MockedStatic<CourseMapper> courseMapperMockedStatic;
+    private static MockedStatic<MapperUtil> mapperUtilMockedStatic;
+
+    @BeforeAll
+    static void createStaticMocks() {
+        courseMapperMockedStatic = mockStatic(CourseMapper.class);
+        mapperUtilMockedStatic = mockStatic(MapperUtil.class);
+    }
+
+    @AfterAll
+    static void destroyStaticMocks() {
+        courseMapperMockedStatic.close();
+        mapperUtilMockedStatic.close();
+    }
+
     @Test
     void CourseService_FindAll_ReturnsAllValues() {
-
-        mockStatic(CourseMapper.class);
-
         List<CourseEntity> courses = Arrays.asList(courseEntity, courseEntity, courseEntity, courseEntity);
 
         doReturn(courses).when(courseRepository).findAll();
@@ -53,9 +72,6 @@ class CourseServiceTest {
 
     @Test
     void CourseService_FindAll_ReturnsEmptyList() {
-
-        mockStatic(CourseMapper.class);
-
         List<CourseEntity> courses = new ArrayList<>();
 
         doReturn(courses).when(courseRepository).findAll();
@@ -69,9 +85,6 @@ class CourseServiceTest {
     void CourseService_FindById_ReturnsCorrectObject() {
 
         // Arrange
-        // Mock the static mapping method
-        mockStatic(CourseMapper.class);
-
         // Create the required objects
         CourseResponse response = new CourseResponse();
         CourseDTO dto = new CourseDTO();
@@ -153,13 +166,169 @@ class CourseServiceTest {
     void CourseService_SaveCourseAndLinkInstructor_SavesObjectsCorrectly() {
 
         // Arrange
-        // Sub the necessary methods
+        CourseEntity courseEntity = new CourseEntity();
+        var request = new CourseAddAndLinkInstructorRequest(courseDTO, 1);
 
+        // Sub the necessary methods
+        doReturn(Optional.of(instructorEntity)).when(instructorRepository).findById(any());
+        when(MapperUtil.map(any(), any())).thenReturn(courseEntity);
+        doReturn(courseEntity).when(courseRepository).save(any());
+        when(CourseMapper.mapToResponse(any())).thenReturn(courseResponse);
 
         // Act
+        // Assert
+        assertNotNull(courseService.saveCourseAndLinkInstructor(request));
+
+    }
+
+    @Test
+    void CourseService_SaveCourseAndLinkInstructor_ThrowsInstructorNotFoundException() {
+
+        // Arrange
+        var request = new CourseAddAndLinkInstructorRequest(courseDTO, 1);
+
+        // Sub the necessary methods
+        doReturn(Optional.empty()).when(instructorRepository).findById(any());
+
+        // Act
+        // Assert
+        assertThrows(InstructorNotFoundException.class, () -> courseService.saveCourseAndLinkInstructor(request));
+
+    }
+
+    @Test
+    void CourseService_Update_UpdatesSuccessfully(){
+
+        // Arrange
+        UUID id = UUID.randomUUID();
+        CourseEntity courseEntity = new CourseEntity(
+                id,
+                "name",
+                new Timestamp(System.currentTimeMillis()),
+                new Timestamp(System.currentTimeMillis()),
+                CourseLevel.Advanced,
+                true,
+                instructorEntity,
+                null
+
+        );
+
+        CourseDTO courseDTO = new CourseDTO(
+                id,
+                "new name",
+                new Timestamp(System.currentTimeMillis()),
+                new Timestamp(System.currentTimeMillis()),
+                CourseLevel.Beginner,
+                false
+        );
+
+        CourseResponse courseResponse = new CourseResponse(courseDTO, null);
+
+        // Stub the necessary methods
+        doReturn(Optional.of(courseEntity)).when(courseRepository).findById(any());
+        doReturn(courseEntity).when(courseRepository).save(any());
+        when(CourseMapper.mapToResponse(any())).thenReturn(courseResponse);
+
+        // Act
+        CourseResponse update = courseService.update(courseDTO);
 
         // Assert
+        assertAll(() -> {
+            assertNotNull(update);
+            assertEquals(id, update.getCourse().getId());
+            assertEquals(CourseLevel.Beginner, update.getCourse().getCourseLevel());
+            assertEquals(false, update.getCourse().getIsStarted());
+        });
+    }
 
+    @Test
+    void CourseService_Update_ThrowsCourseNotFoundException() {
+
+        // Arrange
+        doReturn(Optional.empty()).when(courseRepository).findById(any());
+
+        // Act
+        // Assert
+        assertThrows(CourseNotFoundException.class, () -> courseService.update(courseDTO));
+
+    }
+
+    @Test
+    void CourseService_getNameStartDateEnrolledStudents_ReturnsAll() {
+
+        // Arrange
+        List<CourseEntity> entities = Arrays.asList(courseEntity, courseEntity, courseEntity);
+        var dto = mock(CourseNameStartDateEnrolledStudentsDTO.class);
+
+        doReturn(entities).when(courseRepository).findAll();
+        when(CourseMapper.mapToNameStartDateEnrolledStudents(any())).thenReturn(dto);
+
+        // Act
+        // Assert
+        assertEquals(3, courseService.getNameStartDateEnrolledStudents().size());
+
+    }
+
+    @Test
+    void CourseService_getNameStartDateEnrolledStudents_ReturnsEmptyList() {
+
+        // Arrange
+        List<CourseEntity> entities = new ArrayList<>();
+        var dto = mock(CourseNameStartDateEnrolledStudentsDTO.class);
+
+        doReturn(entities).when(courseRepository).findAll();
+        when(CourseMapper.mapToNameStartDateEnrolledStudents(any())).thenReturn(dto);
+
+        // Act
+        // Assert
+        assertEquals(0, courseService.getNameStartDateEnrolledStudents().size());
+
+    }
+
+    @Test
+    void CourseService_GetCourseLevelEnrolledStudents_ReturnsAll() {
+
+        // Arrange
+        var dto = mock(CourseLevelEnrolledStudents.class);
+
+        CourseEntity beginnerCourse = new CourseEntity();
+        beginnerCourse.setCourseLevel(CourseLevel.Beginner);
+
+        CourseEntity advancedCourse = new CourseEntity();
+        advancedCourse.setCourseLevel(CourseLevel.Advanced);
+
+        List<CourseEntity> entities = Arrays.asList(advancedCourse, beginnerCourse, beginnerCourse, beginnerCourse);
+
+        doReturn(entities).when(courseRepository).findAll();
+        when(CourseMapper.mapToCourseLevelEnrolledStudents(any())).thenReturn(dto);
+
+        // Act
+        // Assert
+        assertEquals(3, courseService.getCourseLevelEnrolledStudents("Beginner").size());
+    }
+
+    @Test
+    void CourseService_GetCourseLevelEnrolledStudents_ReturnsEmptyList() {
+
+        // Arrange
+        var dto = mock(CourseLevelEnrolledStudents.class);
+        List<CourseEntity> entities = new ArrayList<>();
+
+        doReturn(entities).when(courseRepository).findAll();
+        when(CourseMapper.mapToCourseLevelEnrolledStudents(any())).thenReturn(dto);
+
+        // Act
+        // Assert
+        assertEquals(0, courseService.getCourseLevelEnrolledStudents("Beginner").size());
+    }
+
+    @Test
+    void CourseService_GetCourseLevelEnrolledStudents_ThrowsUnknownGenderException() {
+
+        // Arrange
+        // Act
+        // Assert
+        assertThrows(UnknownGenderException.class, () -> courseService.getCourseLevelEnrolledStudents("anything"));
     }
 
 }

@@ -99,13 +99,6 @@ public class CourseService {
         List<CourseEntity> courseEntities = repository.findAll();
         return courseEntities.stream()
                 .filter(courseEntity -> courseEntity.getCourseLevel() == inputLevel)
-                .map(courseEntity -> {
-                    List<String> studentNames = courseEntity.getStudents().stream().map(student -> student.getFirstName() + " " + student.getLastName()).toList();
-                    return new CourseLevelEnrolledStudents(
-                            courseEntity.getName(),
-                            courseEntity.getCourseLevel(),
-                            studentNames
-                    );
-                }).toList();
+                .map(CourseMapper::mapToCourseLevelEnrolledStudents).toList();
     }
 }

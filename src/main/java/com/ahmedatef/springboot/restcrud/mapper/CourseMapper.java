@@ -1,9 +1,6 @@
 package com.ahmedatef.springboot.restcrud.mapper;
 
-import com.ahmedatef.springboot.restcrud.dto.CourseDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseNameStartDateEnrolledStudentsDTO;
-import com.ahmedatef.springboot.restcrud.dto.CourseResponse;
-import com.ahmedatef.springboot.restcrud.dto.InstructorDTO;
+import com.ahmedatef.springboot.restcrud.dto.*;
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 
 import java.sql.Timestamp;
@@ -37,6 +34,15 @@ public final class CourseMapper {
         Timestamp startDate = courseEntity.getStartDate();
         List<String> studentNames = courseEntity.getStudents().stream().map(student -> student.getFirstName() + " " + student.getLastName()).toList();
         return new CourseNameStartDateEnrolledStudentsDTO(name, startDate, studentNames);
+    }
+
+    public static CourseLevelEnrolledStudents mapToCourseLevelEnrolledStudents(CourseEntity courseEntity) {
+        List<String> studentNames = courseEntity.getStudents().stream().map(student -> student.getFirstName() + " " + student.getLastName()).toList();
+        return new CourseLevelEnrolledStudents(
+                courseEntity.getName(),
+                courseEntity.getCourseLevel(),
+                studentNames
+        );
     }
 
 }
