@@ -42,7 +42,7 @@ class CourseServiceTest {
     @Mock
     private CourseEntity courseEntity;
     @InjectMocks
-    CourseService courseService;
+    private CourseService courseService;
 
     private static MockedStatic<CourseMapper> courseMapperMockedStatic;
     private static MockedStatic<MapperUtil> mapperUtilMockedStatic;
@@ -61,22 +61,28 @@ class CourseServiceTest {
 
     @Test
     void CourseService_FindAll_ReturnsAllValues() {
+        // Arrange
         List<CourseEntity> courses = Arrays.asList(courseEntity, courseEntity, courseEntity, courseEntity);
 
         doReturn(courses).when(courseRepository).findAll();
         when(CourseMapper.mapToResponse(courseEntity)).thenReturn(courseResponse);
 
+        // Act
+        // Assert
         assertEquals(4, courseService.findAll().size());
 
     }
 
     @Test
     void CourseService_FindAll_ReturnsEmptyList() {
+        // Arrange
         List<CourseEntity> courses = new ArrayList<>();
 
         doReturn(courses).when(courseRepository).findAll();
         when(CourseMapper.mapToResponse(courseEntity)).thenReturn(courseResponse);
 
+        // Act
+        // Assert
         assertEquals(0, courseService.findAll().size());
 
     }
@@ -166,8 +172,7 @@ class CourseServiceTest {
     void CourseService_SaveCourseAndLinkInstructor_SavesObjectsCorrectly() {
 
         // Arrange
-        CourseEntity courseEntity = new CourseEntity();
-        var request = new CourseAddAndLinkInstructorRequest(courseDTO, 1);
+        var request = mock(CourseAddAndLinkInstructorRequest.class);
 
         // Sub the necessary methods
         doReturn(Optional.of(instructorEntity)).when(instructorRepository).findById(any());
