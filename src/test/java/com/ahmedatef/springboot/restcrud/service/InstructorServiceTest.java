@@ -187,17 +187,6 @@ class InstructorServiceTest {
 
         // Arrange
         int id = 1;
-        InstructorEntity entity = new InstructorEntity(
-                id,
-                "first",
-                "last",
-                "email",
-                "number",
-                "title",
-                null,
-                null
-        );
-
         InstructorDTO dto = new InstructorDTO(
                 id,
                 "new first",
@@ -210,8 +199,8 @@ class InstructorServiceTest {
         InstructorResponse response = new InstructorResponse(dto, null, null);
 
         // Stub the necessary methods
-        doReturn(Optional.of(entity)).when(instructorRepository).findById(any());
-        doReturn(entity).when(instructorRepository).save(any());
+        doReturn(Optional.of(instructorEntity)).when(instructorRepository).findById(any());
+        doReturn(instructorEntity).when(instructorRepository).save(any());
         when(InstructorMapper.mapToResponse(any())).thenReturn(response);
 
         // Act

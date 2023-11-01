@@ -206,18 +206,6 @@ class CourseServiceTest {
 
         // Arrange
         UUID id = UUID.randomUUID();
-        CourseEntity courseEntity = new CourseEntity(
-                id,
-                "name",
-                new Timestamp(System.currentTimeMillis()),
-                new Timestamp(System.currentTimeMillis()),
-                CourseLevel.Advanced,
-                true,
-                instructorEntity,
-                null
-
-        );
-
         CourseDTO courseDTO = new CourseDTO(
                 id,
                 "new name",
