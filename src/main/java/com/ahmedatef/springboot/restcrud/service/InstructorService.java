@@ -1,15 +1,15 @@
 package com.ahmedatef.springboot.restcrud.service;
 
 import com.ahmedatef.springboot.restcrud.dto.*;
-import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
+import com.ahmedatef.springboot.restcrud.exception.InstructorAlreadyExistsException;
 import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
+import com.ahmedatef.springboot.restcrud.exception.InvalidEmailAddressException;
 import com.ahmedatef.springboot.restcrud.mapper.InstructorMapper;
 import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,10 +19,12 @@ import java.util.stream.Collectors;
 public class InstructorService {
 
     private final InstructorRepository repository;
+    private final InstructorValidation instructorValidation;
 
     @Autowired
-    public InstructorService(InstructorRepository repository) {
+    public InstructorService(InstructorRepository repository, InstructorValidation instructorValidation) {
         this.repository = repository;
+        this.instructorValidation = instructorValidation;
     }
 
     public List<InstructorResponse> findAll() {
@@ -41,6 +43,11 @@ public class InstructorService {
     }
 
     public InstructorResponse save(InstructorDTO instructor) {
+        if (!validatePhoneNumber(instructor.getPhoneNumber()))
+            throw new InstructorAlreadyExistsException("Instructor with phone number " + instructor.getPhoneNumber() + " already exists.");
+        if (!validateEmailAddress(instructor.getEmail()))
+            throw new InvalidEmailAddressException("Email address " + instructor.getEmail() + " is invalid.");
+
         InstructorEntity entity = MapperUtil.map(instructor, InstructorEntity.class);
         entity.setId(0);
         InstructorEntity savedEntity = repository.save(entity);
@@ -48,6 +55,11 @@ public class InstructorService {
     }
 
     public InstructorResponse update(InstructorDTO instructor) {
+        if (!validatePhoneNumber(instructor.getPhoneNumber()))
+            throw new InstructorAlreadyExistsException("Instructor with phone number " + instructor.getPhoneNumber() + " already exists.");
+        if (!validateEmailAddress(instructor.getEmail()))
+            throw new InvalidEmailAddressException("Email address " + instructor.getEmail() + " is invalid.");
+
         Optional<InstructorEntity> optional = repository.findById(instructor.getId());
         if (optional.isPresent()) {
             InstructorEntity instructorEntity = optional.get();
@@ -81,5 +93,17 @@ public class InstructorService {
         List<InstructorEntity> instructorEntities = repository.findAll();
         return instructorEntities.stream()
                 .map(InstructorMapper::mapToInstructorAndEnrolledStudents).toList();
+    }
+
+    protected boolean validatePhoneNumber(String phoneNumber) {
+        return instructorValidation.validatePhoneNumber(phoneNumber);
+    }
+
+    protected boolean validateEmailAddress(String emailAddress) {
+        return instructorValidation.validateEmailAddress(emailAddress);
+    }
+
+    protected boolean validateYoutubeChannel(String youtubeChannel) {
+        return instructorValidation.validateYoutubeChannel(youtubeChannel);
     }
 }

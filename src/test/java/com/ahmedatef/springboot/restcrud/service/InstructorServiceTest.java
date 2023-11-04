@@ -4,9 +4,7 @@ import com.ahmedatef.springboot.restcrud.dto.*;
 import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
 import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
-import com.ahmedatef.springboot.restcrud.exception.CourseNotFoundException;
-import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
-import com.ahmedatef.springboot.restcrud.exception.UnknownGenderException;
+import com.ahmedatef.springboot.restcrud.exception.*;
 import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
 import com.ahmedatef.springboot.restcrud.mapper.InstructorMapper;
 import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
@@ -40,6 +38,8 @@ class InstructorServiceTest {
     private InstructorDTO instructorDTO;
     @Mock
     private InstructorResponse instructorResponse;
+    @Mock
+    private InstructorValidation instructorValidation;
     @InjectMocks
     private InstructorService instructorService;
 
@@ -176,9 +176,39 @@ class InstructorServiceTest {
         doReturn(instructorEntity).when(instructorRepository).save(any());
         when(InstructorMapper.mapToResponse(any())).thenReturn(instructorResponse);
 
+        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(true).when(instructorValidation).validateEmailAddress(any());
+
         // Act
         // Assert
         assertNotNull(instructorService.save(instructorDTO));
+
+    }
+
+    @Test
+    void InstructorService_Save_ThrowsInstructorAlreadyExistsException() {
+
+        // Arrange
+        // Sub the necessary methods
+        doReturn(false).when(instructorValidation).validatePhoneNumber(any());
+
+        // Act
+        // Assert
+        assertThrows(InstructorAlreadyExistsException.class, () -> instructorService.save(instructorDTO));
+
+    }
+
+    @Test
+    void InstructorService_Save_ThrowsInvalidEmailAddressException() {
+
+        // Arrange
+        // Sub the necessary methods
+        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(false).when(instructorValidation).validateEmailAddress(any());
+
+        // Act
+        // Assert
+        assertThrows(InvalidEmailAddressException.class, () -> instructorService.save(instructorDTO));
 
     }
 
@@ -202,6 +232,8 @@ class InstructorServiceTest {
         doReturn(Optional.of(instructorEntity)).when(instructorRepository).findById(any());
         doReturn(instructorEntity).when(instructorRepository).save(any());
         when(InstructorMapper.mapToResponse(any())).thenReturn(response);
+        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(true).when(instructorValidation).validateEmailAddress(any());
 
         // Act
         InstructorResponse update = instructorService.update(dto);
@@ -220,10 +252,37 @@ class InstructorServiceTest {
 
         // Arrange
         doReturn(Optional.empty()).when(instructorRepository).findById(any());
+        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(true).when(instructorValidation).validateEmailAddress(any());
 
         // Act
         // Assert
         assertThrows(InstructorNotFoundException.class, () -> instructorService.update(instructorDTO));
+
+    }
+
+    @Test
+    void InstructorService_Update_ThrowsInstructorAlreadyExistsException() {
+
+        // Arrange
+        doReturn(false).when(instructorValidation).validatePhoneNumber(any());
+
+        // Act
+        // Assert
+        assertThrows(InstructorAlreadyExistsException.class, () -> instructorService.update(instructorDTO));
+
+    }
+
+    @Test
+    void InstructorService_Update_ThrowsInvalidEmailAddressException() {
+
+        // Arrange
+        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(false).when(instructorValidation).validateEmailAddress(any());
+
+        // Act
+        // Assert
+        assertThrows(InvalidEmailAddressException.class, () -> instructorService.update(instructorDTO));
 
     }
 
