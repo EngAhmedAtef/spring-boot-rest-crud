@@ -1,14 +1,15 @@
 package com.ahmedatef.springboot.restcrud.service;
 
-import com.ahmedatef.springboot.restcrud.dto.*;
-import com.ahmedatef.springboot.restcrud.entity.CourseEntity;
+import com.ahmedatef.springboot.restcrud.dto.InstructorAndEnrolledStudentsDTO;
+import com.ahmedatef.springboot.restcrud.dto.InstructorDTO;
+import com.ahmedatef.springboot.restcrud.dto.InstructorNameAndCourseNamesDTO;
+import com.ahmedatef.springboot.restcrud.dto.InstructorResponse;
 import com.ahmedatef.springboot.restcrud.entity.InstructorEntity;
-import com.ahmedatef.springboot.restcrud.enums.CourseLevel;
-import com.ahmedatef.springboot.restcrud.exception.*;
-import com.ahmedatef.springboot.restcrud.mapper.CourseMapper;
+import com.ahmedatef.springboot.restcrud.exception.InstructorAlreadyExistsException;
+import com.ahmedatef.springboot.restcrud.exception.InstructorNotFoundException;
+import com.ahmedatef.springboot.restcrud.exception.InvalidEmailAddressException;
 import com.ahmedatef.springboot.restcrud.mapper.InstructorMapper;
 import com.ahmedatef.springboot.restcrud.mapper.MapperUtil;
-import com.ahmedatef.springboot.restcrud.repository.CourseRepository;
 import com.ahmedatef.springboot.restcrud.repository.InstructorRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,15 +18,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.Timestamp;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class InstructorServiceTest {
@@ -38,9 +41,8 @@ class InstructorServiceTest {
     private InstructorDTO instructorDTO;
     @Mock
     private InstructorResponse instructorResponse;
-    @Mock
-    private InstructorValidation instructorValidation;
     @InjectMocks
+    @Spy
     private InstructorService instructorService;
 
     private static MockedStatic<InstructorMapper> instructorMapperMockedStatic;
@@ -176,8 +178,11 @@ class InstructorServiceTest {
         doReturn(instructorEntity).when(instructorRepository).save(any());
         when(InstructorMapper.mapToResponse(any())).thenReturn(instructorResponse);
 
-        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
-        doReturn(true).when(instructorValidation).validateEmailAddress(any());
+//        when(instructorService.validatePhoneNumber(any())).thenReturn(true);
+//        when(instructorService.validateEmailAddress(any())).thenReturn(true);
+
+        doReturn(true).when(instructorService).validatePhoneNumber(any());
+        doReturn(true).when(instructorService).validateEmailAddress(any());
 
         // Act
         // Assert
@@ -190,7 +195,7 @@ class InstructorServiceTest {
 
         // Arrange
         // Sub the necessary methods
-        doReturn(false).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(false).when(instructorService).validatePhoneNumber(any());
 
         // Act
         // Assert
@@ -203,8 +208,8 @@ class InstructorServiceTest {
 
         // Arrange
         // Sub the necessary methods
-        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
-        doReturn(false).when(instructorValidation).validateEmailAddress(any());
+        doReturn(true).when(instructorService).validatePhoneNumber(any());
+        doReturn(false).when(instructorService).validateEmailAddress(any());
 
         // Act
         // Assert
@@ -232,8 +237,8 @@ class InstructorServiceTest {
         doReturn(Optional.of(instructorEntity)).when(instructorRepository).findById(any());
         doReturn(instructorEntity).when(instructorRepository).save(any());
         when(InstructorMapper.mapToResponse(any())).thenReturn(response);
-        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
-        doReturn(true).when(instructorValidation).validateEmailAddress(any());
+        doReturn(true).when(instructorService).validatePhoneNumber(any());
+        doReturn(true).when(instructorService).validateEmailAddress(any());
 
         // Act
         InstructorResponse update = instructorService.update(dto);
@@ -252,8 +257,8 @@ class InstructorServiceTest {
 
         // Arrange
         doReturn(Optional.empty()).when(instructorRepository).findById(any());
-        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
-        doReturn(true).when(instructorValidation).validateEmailAddress(any());
+        doReturn(true).when(instructorService).validatePhoneNumber(any());
+        doReturn(true).when(instructorService).validateEmailAddress(any());
 
         // Act
         // Assert
@@ -265,7 +270,7 @@ class InstructorServiceTest {
     void InstructorService_Update_ThrowsInstructorAlreadyExistsException() {
 
         // Arrange
-        doReturn(false).when(instructorValidation).validatePhoneNumber(any());
+        doReturn(false).when(instructorService).validatePhoneNumber(any());
 
         // Act
         // Assert
@@ -277,8 +282,8 @@ class InstructorServiceTest {
     void InstructorService_Update_ThrowsInvalidEmailAddressException() {
 
         // Arrange
-        doReturn(true).when(instructorValidation).validatePhoneNumber(any());
-        doReturn(false).when(instructorValidation).validateEmailAddress(any());
+        doReturn(true).when(instructorService).validatePhoneNumber(any());
+        doReturn(false).when(instructorService).validateEmailAddress(any());
 
         // Act
         // Assert

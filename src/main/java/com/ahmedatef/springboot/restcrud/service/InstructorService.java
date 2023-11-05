@@ -96,6 +96,7 @@ public class InstructorService {
     }
 
     protected boolean validatePhoneNumber(String phoneNumber) {
+        System.out.println("Called ValidatePhoneNumber");
         return instructorValidation.validatePhoneNumber(phoneNumber);
     }
 
